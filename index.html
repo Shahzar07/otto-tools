@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OttoTools Web App - Phase 1 MVP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2a4b8d;
+            --secondary: #3a7ca5;
+            --success: #4caf50;
+            --warning: #ff9800;
+            --danger: #f44336;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 15px 0;
+            box-shadow: var(--box-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            color: #ffd43b;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        
+        nav a:hover, nav a.active {
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        .tool-section {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            margin-bottom: 30px;
+            transition: var(--transition);
+        }
+        
+        .tool-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+        }
+        
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+            color: var(--primary);
+        }
+        
+        .section-title i {
+            font-size: 1.5rem;
+        }
+        
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .score-badge {
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 8px 20px;
+            border-radius: 50px;
+            margin: 10px 0;
+            display: inline-block;
+        }
+        
+        .score-excellent {
+            background: linear-gradient(to right, #00c853, #009624);
+            color: white;
+        }
+        
+        .score-good {
+            background: linear-gradient(to right, #64dd17, #2e7d32);
+            color: white;
+        }
+        
+        .score-fair {
+            background: linear-gradient(to right, #ffd600, #ff8f00);
+            color: white;
+        }
+        
+        .score-poor {
+            background: linear-gradient(to right, #ff9100, #ff3d00);
+            color: white;
+        }
+        
+        .score-bad {
+            background: linear-gradient(to right, #ff3d00, #dd2c00);
+            color: white;
+        }
+        
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            transition: var(--transition);
+            border: 1px solid var(--light-gray);
+        }
+        
+        .card:hover {
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        
+        .card-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+        
+        .input-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--gray);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(58, 124, 165, 0.2);
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #1e3a6d, #2c6585);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background: #dde0e3;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th {
+            background-color: var(--primary);
+            color: white;
+            text-align: left;
+            padding: 12px 15px;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        tr:hover td {
+            background-color: rgba(58, 124, 165, 0.05);
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .comparison-card {
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .coming-soon {
+            display: inline-block;
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 10px;
+            vertical-align: super;
+        }
+        
+        .factor-table {
+            width: 100%;
+            margin: 20px 0;
+        }
+        
+        .factor-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .factor-name {
+            font-weight: 500;
+        }
+        
+        .factor-value {
+            font-weight: 600;
+        }
+        
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted var(--gray);
+            cursor: help;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 250px;
+            background-color: var(--dark);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -125px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            font-weight: 400;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        .pill {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        
+        .pill-blue {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .pill-green {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .pill-red {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .pill-gray {
+            background-color: #f5f5f5;
+            color: #424242;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .mock-feature {
+            background: repeating-linear-gradient(
+                45deg,
+                #f0f0f0,
+                #f0f0f0 10px,
+                #e0e0e0 10px,
+                #e0e0e0 20px
+            );
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+            color: var(--gray);
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2, .grid-3, .grid-4, .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>OttoTools</span>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#score-viewer" class="active">Score Viewer</a></li>
+                        <li><a href="#screener">Screener</a></li>
+                        <li><a href="#calendar">Calendar Builder</a></li>
+                        <li><a href="#compare">Compare Tool</a></li>
+                        <li><a href="#pricing">Pricing</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- OttoScore™ Viewer -->
+        <section id="score-viewer" class="tool-section">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i>
+                OttoScore™ Viewer
+            </h2>
+            
+            <div class="input-group">
+                <label for="ticker-search">Enter Ticker Symbol</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="ticker-search" placeholder="e.g., AAPL, MSFT..." value="O">
+                    <button class="btn btn-primary" onclick="loadScore()">View Score</button>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Realty Income Corp (O)</h3>
+                <div class="score-badge score-excellent">OttoScore: 87</div>
+                
+                <div class="grid-3">
+                    <div>
+                        <div class="card-title">Dividend Snapshot</div>
+                        <p><strong>Yield:</strong> 4.92%</p>
+                        <p><strong>Frequency:</strong> Monthly</p>
+                        <p><strong>Next Ex-Div:</strong> Aug 31, 2025</p>
+                        <p><strong>Payout Ratio:</strong> 75.2%</p>
+                    </div>
+                    
+                    <div>
+                        <div class="card-title">Otto's Take™</div>
+                        <p>Strong monthly dividend payer with consistent growth history. Excellent financial health and sustainable payout ratio. REIT sector leader with diversified portfolio.</p>
+                    </div>
+                    
+                    <div>
+                        <div class="card-title">Score Modifiers</div>
+                        <p><span class="pill pill-green">+5% Sector Leader</span></p>
+                        <p><span class="pill pill-green">+3% 25+ Years Dividend Growth</span></p>
+                        <p><span class="pill pill-red">-2% Interest Rate Sensitivity</span></p>
+                    </div>
+                </div>
+                
+                <div class="card-title">Factor Breakdown</div>
+                <div class="factor-table">
+                    <div class="factor-row">
+                        <div class="factor-name">Dividend Yield <span class="tooltip">?<span class="tooltiptext">Annual dividend payment as a percentage of stock price</span></span></div>
+                        <div class="factor-value">8.2 / 10</div>
+                    </div>
+                    <div class="factor-row">
+                        <div class="factor-name">Payout Sustainability <span class="tooltip">?<span class="tooltiptext">Ability to maintain current dividend payments</span></span></div>
+                        <div class="factor-value">9.5 / 10</div>
+                    </div>
+                    <div class="factor-row">
+                        <div class="factor-name">Growth History <span class="tooltip">?<span class="tooltiptext">Track record of consistent dividend increases</span></span></div>
+                        <div class="factor-value">9.0 / 10</div>
+                    </div>
+                    <div class="factor-row">
+                        <div class="factor-name">Financial Health <span class="tooltip">?<span class="tooltiptext">Company's overall financial stability</span></span></div>
+                        <div class="factor-value">8.8 / 10</div>
+                    </div>
+                    <div class="factor-row">
+                        <div class="factor-name">Sector Outlook <span class="tooltip">?<span class="tooltiptext">Growth potential of the industry sector</span></span></div>
+                        <div class="factor-value">7.5 / 10</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- OttoCore™ Screener -->
+        <section id="screener" class="tool-section">
+            <h2 class="section-title">
+                <i class="fas fa-filter"></i>
+                OttoCore™ Screener
+            </h2>
+            
+            <div class="grid-4">
+                <div class="input-group">
+                    <label for="yield-range">Dividend Yield</label>
+                    <select id="yield-range">
+                        <option>≥ 3%</option>
+                        <option selected>≥ 5%</option>
+                        <option>≥ 7%</option>
+                        <option>≥ 10%</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="sector">Sector</label>
+                    <select id="sector">
+                        <option>All Sectors</option>
+                        <option selected>REITs</option>
+                        <option>CEFs</option>
+                        <option>Utilities</option>
+                        <option>Energy</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="frequency">Frequency</label>
+                    <select id="frequency">
+                        <option>Any</option>
+                        <option selected>Monthly</option>
+                        <option>Quarterly</option>
+                    </select>
+                </div>
+                
+                <div class="input-group">
+                    <label for="beta">Beta Threshold</label>
+                    <select id="beta">
+                        <option selected>≤ 1.0 (Low Volatility)</option>
+                        <option>≤ 1.5</option>
+                        <option>Any</option>
+                    </select>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" style="margin-bottom: 20px;">
+                <i class="fas fa-search"></i> Apply Filters
+            </button>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ticker</th>
+                        <th>Name</th>
+                        <th>Yield</th>
+                        <th>Frequency</th>
+                        <th>OttoScore</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>O</td>
+                        <td>Realty Income Corp</td>
+                        <td>4.92%</td>
+                        <td>Monthly</td>
+                        <td><span class="score-badge score-excellent" style="padding: 3px 10px; font-size: 0.9rem;">87</span></td>
+                        <td><button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.9rem;">View Score</button></td>
+                    </tr>
+                    <tr>
+                        <td>MAIN</td>
+                        <td>Main Street Capital</td>
+                        <td>6.45%</td>
+                        <td>Monthly</td>
+                        <td><span class="score-badge score-good" style="padding: 3px 10px; font-size: 0.9rem;">76</span></td>
+                        <td><button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.9rem;">View Score</button></td>
+                    </tr>
+                    <tr>
+                        <td>STAG</td>
+                        <td>Stag Industrial</td>
+                        <td>4.15%</td>
+                        <td>Monthly</td>
+                        <td><span class="score-badge score-good" style="padding: 3px 10px; font-size: 0.9rem;">79</span></td>
+                        <td><button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.9rem;">View Score</button></td>
+                    </tr>
+                    <tr>
+                        <td>ARI</td>
+                        <td>Apollo Commercial Real Estate</td>
+                        <td>11.32%</td>
+                        <td>Monthly</td>
+                        <td><span class="score-badge score-fair" style="padding: 3px 10px; font-size: 0.9rem;">63</span></td>
+                        <td><button class="btn btn-secondary" style="padding: 5px 10px; font-size: 0.9rem;">View Score</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+        
+        <!-- Otto3x12™ Calendar Builder -->
+        <section id="calendar" class="tool-section">
+            <h2 class="section-title">
+                <i class="fas fa-calendar-alt"></i>
+                Otto3x12™ Calendar Builder
+            </h2>
+            
+            <div class="grid-3">
+                <div class="input-group">
+                    <label for="target-income">Target Monthly Income ($)</label>
+                    <input type="number" id="target-income" value="1000">
+                </div>
+                
+                <div class="input-group">
+                    <label for="preferred-yield">Preferred Yield (%)</label>
+                    <input type="number" id="preferred-yield" value="5.0" step="0.1">
+                </div>
+                
+                <div class="input-group">
+                    <label for="investment-amount">Investment Amount ($)</label>
+                    <input type="number" id="investment-amount" value="250000" disabled>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary">
+                <i class="fas fa-calculator"></i> Generate Income Plan
+            </button>
+            
+            <div style="margin-top: 30px;">
+                <div class="card-title">Suggested Quarterly Stocks for Monthly Income</div>
+                <div class="grid-3">
+                    <div class="comparison-card">
+                        <h4>Stock A</h4>
+                        <p>Realty Income Corp (O)</p>
+                        <div class="score-badge score-excellent" style="margin: 10px auto;">87</div>
+                        <p><strong>Allocation:</strong> $85,000</p>
+                        <p><strong>Projected Income:</strong> $350/mo</p>
+                    </div>
+                    
+                    <div class="comparison-card">
+                        <h4>Stock B</h4>
+                        <p>Main Street Capital (MAIN)</p>
+                        <div class="score-badge score-good" style="margin: 10px auto;">76</div>
+                        <p><strong>Allocation:</strong> $85,000</p>
+                        <p><strong>Projected Income:</strong> $350/mo</p>
+                    </div>
+                    
+                    <div class="comparison-card">
+                        <h4>Stock C</h4>
+                        <p>Stag Industrial (STAG)</p>
+                        <div class="score-badge score-good" style="margin: 10px auto;">79</div>
+                        <p><strong>Allocation:</strong> $80,000</p>
+                        <p><strong>Projected Income:</strong> $300/mo</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 20px; background-color: #e8f4f8; padding: 15px; border-radius: var(--border-radius);">
+                    <div class="card-title">Payment Schedule</div>
+                    <p>By selecting 3 quarterly-paying stocks with staggered payment months, you achieve monthly income:</p>
+                    <p><strong>Stock A:</strong> Jan, Apr, Jul, Oct</p>
+                    <p><strong>Stock B:</strong> Feb, May, Aug, Nov</p>
+                    <p><strong>Stock C:</strong> Mar, Jun, Sep, Dec</p>
+                    
+                    <div style="margin-top: 15px; padding: 10px; background-color: #d1ecf1; border-radius: var(--border-radius);">
+                        <div class="card-title">DRIP Simulation <span class="coming-soon">Coming Soon</span></div>
+                        <p>Future versions will include Dividend Reinvestment Plan simulation.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- OttoCompare™ Tool -->
+        <section id="compare" class="tool-section">
+            <h2 class="section-title">
+                <i class="fas fa-balance-scale"></i>
+                OttoCompare™ Tool
+            </h2>
+            
+            <div class="grid-3">
+                <div class="input-group">
+                    <label for="ticker1">Ticker 1</label>
+                    <input type="text" id="ticker1" value="O">
+                </div>
+                
+                <div class="input-group">
+                    <label for="ticker2">Ticker 2</label>
+                    <input type="text" id="ticker2" value="STAG">
+                </div>
+                
+                <div class="input-group">
+                    <label for="ticker3">Ticker 3 (Optional)</label>
+                    <input type="text" id="ticker3" placeholder="Enter ticker...">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary">
+                <i class="fas fa-exchange-alt"></i> Compare Stocks
+            </button>
+            
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h3>Realty Income (O)</h3>
+                    <div class="score-badge score-excellent">87</div>
+                    <div style="margin-top: 15px;">
+                        <p><strong>Yield:</strong> 4.92%</p>
+                        <p><strong>Payout Ratio:</strong> 75.2%</p>
+                        <p><strong>5Y Growth:</strong> 3.8%</p>
+                        <p><strong>Frequency:</strong> Monthly</p>
+                    </div>
+                    <div style="margin-top: 15px; text-align: left;">
+                        <div class="card-title">Otto's Take™</div>
+                        <p>Industry leader with excellent track record. Monthly payments provide consistent income. Strong financials support continued growth.</p>
+                    </div>
+                </div>
+                
+                <div class="comparison-card">
+                    <h3>Stag Industrial (STAG)</h3>
+                    <div class="score-badge score-good">79</div>
+                    <div style="margin-top: 15px;">
+                        <p><strong>Yield:</strong> 4.15%</p>
+                        <p><strong>Payout Ratio:</strong> 82.5%</p>
+                        <p><strong>5Y Growth:</strong> 5.2%</p>
+                        <p><strong>Frequency:</strong> Monthly</p>
+                    </div>
+                    <div style="margin-top: 15px; text-align: left;">
+                        <div class="card-title">Otto's Take™</div>
+                        <p>Strong growth potential in industrial real estate. Higher payout ratio warrants monitoring. Good option for growth-oriented income.</p>
+                    </div>
+                </div>
+                
+                <div class="comparison-card">
+                    <h3>Add Third Ticker</h3>
+                    <div style="height: 120px; display: flex; align-items: center; justify-content: center; color: var(--gray);">
+                        <i class="fas fa-plus-circle" style="font-size: 2rem;"></i>
+                    </div>
+                    <p>Enter a third ticker symbol to compare</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <div class="card-title">Factor-by-Factor Comparison</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Factor</th>
+                            <th>O</th>
+                            <th>STAG</th>
+                            <th>Difference</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Dividend Yield</td>
+                            <td>4.92%</td>
+                            <td>4.15%</td>
+                            <td><span class="pill pill-blue">+0.77%</span></td>
+                        </tr>
+                        <tr>
+                            <td>Payout Sustainability</td>
+                            <td>9.5/10</td>
+                            <td>8.2/10</td>
+                            <td><span class="pill pill-blue">+1.3</span></td>
+                        </tr>
+                        <tr>
+                            <td>Growth History</td>
+                            <td>9.0/10</td>
+                            <td>7.8/10</td>
+                            <td><span class="pill pill-blue">+1.2</span></td>
+                        </tr>
+                        <tr>
+                            <td>Financial Health</td>
+                            <td>8.8/10</td>
+                            <td>8.0/10</td>
+                            <td><span class="pill pill-blue">+0.8</span></td>
+                        </tr>
+                        <tr>
+                            <td>Volatility (Beta)</td>
+                            <td>0.85</td>
+                            <td>1.05</td>
+                            <td><span class="pill pill-green">-0.20</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+        <!-- Pricing Page UI -->
+        <section id="pricing" class="tool-section">
+            <h2 class="section-title">
+                <i class="fas fa-tag"></i>
+                Pricing
+                <span class="coming-soon">Demo Only</span>
+            </h2>
+            
+            <div class="grid-3">
+                <div class="card" style="text-align: center;">
+                    <h3>Basic</h3>
+                    <p style="font-size: 2rem; font-weight: 700; color: var(--primary);">$9.99<span style="font-size: 1rem; color: var(--gray);">/month</span></p>
+                    <ul style="list-style: none; margin: 20px 0; text-align: left; padding-left: 20px;">
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success);"></i> OttoScore Viewer</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success);"></i> Basic Screener</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-times" style="color: var(--danger);"></i> Advanced Tools</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-times" style="color: var(--danger);"></i> Portfolio Tracking</li>
+                    </ul>
+                    <button class="btn btn-secondary">Select Plan</button>
+                </div>
+                
+                <div class="card" style="text-align: center; border: 2px solid var(--primary); transform: scale(1.05); position: relative;">
+                    <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--primary); color: white; padding: 5px 15px; border-radius: 20px; font-weight: 600;">MOST POPULAR</div>
+                    <h3>Premium</h3>
+                    <p style="font-size: 2rem; font-weight: 700; color: var(--primary);">$19.99<span style="font-size: 1rem; color: var(--gray);">/month</span></p>
+                    <ul style="list-style: none; margin: 20px 0; text-align: left; padding-left: 20px;">
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success);"></i> All Basic Features</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success);"></i> Advanced Screener</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success);"></i> Calendar Builder</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success);"></i> Compare Tool</li>
+                    </ul>
+                    <button class="btn btn-primary">Select Plan</button>
+                </div>
+                
+                <div class="card" style="text-align: center;">
+                    <h3>Professional</h3>
+                    <p style="font-size: 2rem; font-weight: 700; color: var(--primary);">$29.99<span style="font-size: 1rem; color: var(--gray);">/month</span></p>
+                    <ul style="list-style: none; margin: 20px 0; text-align: left; padding-left: 20px;">
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success);"></i> All Premium Features</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success);"></i> Portfolio Tracking</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success);"></i> Custom Alerts</li>
+                        <li style="margin-bottom: 10px;"><i class="fas fa-check" style="color: var(--success);"></i> Advanced Analytics</li>
+                    </ul>
+                    <button class="btn btn-secondary">Select Plan</button>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 20px; background-color: #f8f9fa; border-radius: var(--border-radius);">
+                <h3>Future Features</h3>
+                <div style="display: flex; flex-wrap: wrap; gap: 15px; margin-top: 15px;">
+                    <div class="pill pill-gray">OttoAlert™ <span class="coming-soon">Coming Soon</span></div>
+                    <div class="pill pill-gray">Portfolio Save <span class="coming-soon">Coming Soon</span></div>
+                    <div class="pill pill-gray">User Authentication <span class="coming-soon">Coming Soon</span></div>
+                    <div class="pill pill-gray">DRIP Simulation <span class="coming-soon">Coming Soon</span></div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Editable Scoring Logic -->
+        <section class="tool-section">
+            <h2 class="section-title">
+                <i class="fas fa-cog"></i>
+                Editable Scoring Logic
+            </h2>
+            
+            <p>Adjust the scoring parameters for testing purposes:</p>
+            
+            <div class="grid-2">
+                <div>
+                    <label for="scoring-json">Scoring Logic Configuration (JSON)</label>
+                    <textarea id="scoring-json" rows="10" style="width: 100%; padding: 15px; border: 1px solid var(--light-gray); border-radius: var(--border-radius); font-family: monospace;">
+{
+  "version": "4.1",
+  "factors": [
+    {
+      "name": "Dividend Yield",
+      "weight": 20,
+      "max_score": 10
+    },
+    {
+      "name": "Payout Sustainability",
+      "weight": 25,
+      "max_score": 10
+    },
+    {
+      "name": "Growth History",
+      "weight": 20,
+      "max_score": 10
+    },
+    {
+      "name": "Financial Health",
+      "weight": 20,
+      "max_score": 10
+    },
+    {
+      "name": "Sector Outlook",
+      "weight": 15,
+      "max_score": 10
+    }
+  ],
+  "modifiers": {
+    "sector_leader": 5,
+    "dividend_king": 10,
+    "high_interest_risk": -3
+  }
+}</textarea>
+                </div>
+                
+                <div>
+                    <div class="card-title">Testing Guide</div>
+                    <p>1. Modify the JSON structure to adjust scoring weights and factors</p>
+                    <p>2. Click "Apply Configuration" to update the scoring logic</p>
+                    <p>3. Test different tickers to see the score changes</p>
+                    <p>4. For Google Sheets integration, enter your Sheet ID:</p>
+                    
+                    <div style="margin: 15px 0;">
+                        <label for="sheet-id">Google Sheet ID</label>
+                        <input type="text" id="sheet-id" placeholder="Enter your Google Sheet ID...">
+                    </div>
+                </div>
+            </div>
+            
+            <button class="btn btn-primary" style="margin-top: 15px;">
+                <i class="fas fa-sync-alt"></i> Apply Configuration
+            </button>
+        </section>
+    </div>
+    
+    <footer class="footer">
+        <p>OttoTools Web App - Phase 1 MVP | This is a prototype for demonstration purposes only</p>
+        <p>Backend logic and data processing are not implemented in this frontend demo</p>
+    </footer>
+
+    <script>
+        // Simple function to demonstrate interactivity
+        function loadScore() {
+            const ticker = document.getElementById('ticker-search').value;
+            if (ticker) {
+                alert(`Loading OttoScore™ for ${ticker}...\n\nNote: This is a frontend demo. In a full implementation, this would fetch data from the backend.`);
+            } else {
+                alert('Please enter a ticker symbol');
+            }
+        }
+        
+        // Navigation highlighting
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function() {
+                document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+        
+        // Tooltip initialization
+        document.querySelectorAll('.tooltip').forEach(tooltip => {
+            tooltip.addEventListener('mouseover', function() {
+                const tooltipText = this.querySelector('.tooltiptext');
+                tooltipText.style.visibility = 'visible';
+                tooltipText.style.opacity = '1';
+            });
+            
+            tooltip.addEventListener('mouseout', function() {
+                const tooltipText = this.querySelector('.tooltiptext');
+                tooltipText.style.visibility = 'hidden';
+                tooltipText.style.opacity = '0';
+            });
+        });
+    </script>
+</body>
+</html>
